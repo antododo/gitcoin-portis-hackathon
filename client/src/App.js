@@ -6,7 +6,7 @@ import Web3 from "web3";
 
 import "./App.css";
 
-const portis = new Portis("fbfb6587-b2f3-4c96-8128-845e20a0d0c5", "rinkeby");
+const portis = new Portis("fbfb6587-b2f3-4c96-8128-845e20a0d0c5", "ropsten", {gasRelay: true });
 const web3 = new Web3(portis.provider);
 
 class App extends Component {
@@ -24,11 +24,15 @@ class App extends Component {
       // const web3 = await getWeb3();
 
       // Use web3 to get the user's accounts.
-      const accounts = await web3.eth.getAccounts();
+      // const accounts = await web3.eth.getAccounts();
+      const accounts = await portis.provider.enable();
+
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
       const deployedNetwork = SimpleStorageContract.networks[networkId];
+      console.log(deployedNetwork)
+      console.log(deployedNetwork.address)
       const instance = new web3.eth.Contract(
         SimpleStorageContract.abi,
         deployedNetwork && deployedNetwork.address,
@@ -36,7 +40,7 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.run);
+      this.setState({ web3, accounts, contract: instance }, this.getvalue);
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.log(
@@ -52,51 +56,44 @@ class App extends Component {
 
   };
 
+  getvalue = async () => {
+    const { accounts, contract } = this.state;
+    // Get the value from the contract to prove it worked.
+    const response = await contract.methods.getValue().call();
+
+    // Update state with the result.
+    this.setState({ storageValue: response });
+  }
+
   run = async () => {
-    web3.eth.getAccounts((error, accounts) => {
-      console.log(accounts);
-    });
 
-    // const { accounts, contract } = this.state;
+    const { accounts, contract } = this.state;
+    console.log("accounts: ", accounts);
 
-    // // Stores a given value, 5 by default.
-    // await contract.methods.set(5).send({ from: accounts[0] });
+
+    // Stores a given value, 5 by default.
+    console.log("contract address: ", contract.address)
+    await contract.methods.setValue(55).send({ from: accounts[0] });
 
     // // Get the value from the contract to prove it worked.
-    // const response = await contract.methods.get().call();
+    const response = await contract.methods.getValue().call();
 
     // // Update state with the result.
-    // this.setState({ storageValue: response });
+    this.setState({ storageValue: response });
   };
 
   render() {
     return (
       <div className="App">
-        { (this.state.timeToCheck && !this.state.web3) && <div className="alert alert-danger show" role="alert">
-          <h4 className="alert-heading">Oops! No web3 detected <span role="img" aria-label="Slightly Frowning Face">🙁</span></h4>
-          <p>In order to use this dapp, you need an web3 provider. You should consider trying <a href="https://metamask.io/" className="alert-link" rel="noopener noreferrer" target="_blank">Metamask</a>.</p>
-          <hr/>
-          <p className="mb-0">
-            <i>You don't know what is web3 or Metamask? Check this <a href="https://www.youtube.com/watch?v=6Gf_kRE4MJU" className="alert-link" rel="noopener noreferrer" target="_blank">video</a> for more info.</i>
-          </p>
-          <hr/>
-        </div>}
-
-
-
-        <h1>Good to Go!</h1>
-        <p>Your Truffle Box is installed and ready.</p>
         <h2>Smart Contract Example</h2>
-        <p>
-          If your contracts compiled and migrated successfully, below will show
-          a stored value of 5 (by default).
-        </p>
         <p>
           Try changing the value stored on <strong>line 40</strong> of App.js.
         </p>
         <div>The stored value is: {this.state.storageValue}</div>
 
         <div>Your account is: {this.state.accounts && this.state.accounts[0]}</div>
+        <button onClick={()=>{this.run()}}>Set new value</button>
+
       </div>
     );
   }

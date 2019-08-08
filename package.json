@@ -3,9 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "",
+  "scripts": {
+    "migrateGanache": "truffle migrate --network ganache --compile-all --reset",
+    "migrateRopsten": "truffle migrate --network ropsten --compile-all --reset",
+    "migrateRinkeby": "truffle migrate --network rinkeby --compile-all --reset"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tabookey-gasless": "0.3.3-a"
+    "dotenv": "8.0.0",
+    "tabookey-gasless": "0.3.3-a",
+    "truffle-hdwallet-provider": "1.0.15"
   }
 }
