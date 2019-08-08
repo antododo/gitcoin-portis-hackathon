@@ -1,0 +1,11 @@
+{
+  "name": "reactbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tabookey-gasless": "0.3.3-a"
+  }
+}
