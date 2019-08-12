@@ -3,8 +3,8 @@ import SimpleStorageContract from "./contracts/SimpleStorage.json";
 // import getWeb3 from "./utils/getWeb3";
 import Portis from "@portis/web3";
 import Web3 from "web3";
-
-import "./App.css";
+import { ThemeProvider, Box, Flex, Card, Text, Heading, Button } from "rimble-ui";
+import Header from "./components/Header.js";
 
 const portis = new Portis("fbfb6587-b2f3-4c96-8128-845e20a0d0c5", "ropsten", {gasRelay: true });
 const web3 = new Web3(portis.provider);
@@ -84,17 +84,40 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <h2>Smart Contract Example</h2>
-        <p>
-          Try changing the value stored on <strong>line 40</strong> of App.js.
-        </p>
-        <div>The stored value is: {this.state.storageValue}</div>
+      <ThemeProvider>
+        <Box>
+          <Header />
+          <Flex maxWidth={"640px"} mx={"auto"} p={3}>
+            <Heading.h2 mr={3}>
+              <span role="img" aria-label="Waving hand">
+                👋
+              </span>
+            </Heading.h2>
 
-        <div>Your account is: {this.state.accounts && this.state.accounts[0]}</div>
-        <button onClick={()=>{this.run()}}>Set new value</button>
+            <Text>Hi there, this is a dapp using Portis.</Text>
+          </Flex>
 
-      </div>
+          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
+            Your account is: {this.state.accounts && this.state.accounts[0]}
+          </Card>
+
+          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
+            <p>
+              Try changing the value stored on <strong>line 40</strong> of
+              App.js.
+            </p>
+            <div>The stored value is: {this.state.storageValue}</div>
+            <div />
+            <Button
+              onClick={() => {
+                this.run();
+              }}
+            >
+              Set new value
+            </Button>
+          </Card>
+        </Box>
+      </ThemeProvider>
     );
   }
 }
