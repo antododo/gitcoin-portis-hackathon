@@ -8,7 +8,7 @@ contract SimpleStorage  {
     constructor() public {
         // this is the only hub I trust to receive calls from
         // init_relay_hub(RelayHub(hub)); // TODO - Uncomment to use Portis
-        Source1[0] = "You will be very rich ";
+        Source1[0] = "You will be very rich";
         Source1[1] = "You will be rich";
         Source1[2] = "You will be poor";
         Source1[3] = "You will be very poor";
