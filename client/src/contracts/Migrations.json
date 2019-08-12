@@ -183,7 +183,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2304,
+                        "referencedDeclaration": 796,
                         "src": "147:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -287,7 +287,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2304,
+                        "referencedDeclaration": 796,
                         "src": "213:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -833,7 +833,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2304,
+                        "referencedDeclaration": 796,
                         "src": "147:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -937,7 +937,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2304,
+                        "referencedDeclaration": 796,
                         "src": "213:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -1385,12 +1385,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xa70B2BF3D8F67D9D8Ab9faF24Cf5336aDaCF5602",
-      "transactionHash": "0xfb928a0009b99bd37a11d01d410e8ff9222c4f83720e57246628a580f9214b72"
+      "address": "0x7b099c08c1c6203457A2B9CC74338Dd3367B6DB0",
+      "transactionHash": "0x8b8c805f6daa0fb523e4f61437c43c6f49251e237c12cf04fb6b08b4f342f8c8"
     }
   },
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-08-08T13:15:12.997Z",
+  "updatedAt": "2019-08-12T12:48:55.202Z",
   "devdoc": {
     "methods": {}
   },
