@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
-import FortuneTellerContract from "./contracts/FortuneTeller.json";
 import getWeb3 from "./utils/getWeb3";
-// import Portis from "@portis/web3";
-// import Web3 from "web3";
 import { ThemeProvider, Box, Flex, Card, Text, Heading, Button } from "rimble-ui";
 import Header from "./components/Header.js";
 
+// TODO - Uncomment to use Portis
+// import Portis from "@portis/web3";
+// import Web3 from "web3";
 // const portis = new Portis("fbfb6587-b2f3-4c96-8128-845e20a0d0c5", "ropsten", {gasRelay: true });
 // const web3 = new Web3(portis.provider);
 
 class App extends Component {
   state = {
     storageValue: 0,
-    storageText: "?",
+    storageText: "Click to know your future",
     web3: null,
     accounts: null,
     SimpleStorageContract: null,
@@ -23,11 +23,11 @@ class App extends Component {
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
-      const web3 = await getWeb3();
+      const web3 = await getWeb3(); // TODO - Comment to use Portis
 
       // Use web3 to get the user's accounts.
-      const accounts = await web3.eth.getAccounts();
-      // const accounts = await portis.provider.enable();
+      const accounts = await web3.eth.getAccounts(); // TODO - Comment to use Portis
+      // const accounts = await portis.provider.enable(); // TODO - Uncomment to use Portis
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
@@ -79,7 +79,7 @@ class App extends Component {
     // Stores a given value, 5 by default.
     console.log("contract address: ", SimpleStorageContract.address);
     await SimpleStorageContract.methods
-      .setValue(66)
+      .setValue(this.state.storageValue++)
       .send({ from: accounts[0] });
 
     // Get the value from the contract to prove it worked.
@@ -131,23 +131,25 @@ class App extends Component {
               Try changing the value stored on <strong>line 40</strong> of
               App.js.
             </p>
-            <div>The stored value is: {this.state.storageValue}</div>
-            <div>The stored text is: {this.state.storageText}</div>
             <div />
             <Button
               onClick={() => {
                 this.run();
               }}
             >
-              Set new value
+              TEST - Increase value
             </Button>
+            <div>The stored value is: {this.state.storageValue}</div>
+          </Card>
+          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Button
               onClick={() => {
                 this.callPrediction();
               }}
             >
-              Fortune Teller
+              I want to know my future!
             </Button>
+            <div>{this.state.storageText}</div>
           </Card>
         </Box>
       </ThemeProvider>

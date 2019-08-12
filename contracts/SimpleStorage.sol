@@ -1,52 +1,36 @@
-// pragma solidity ^0.4.24;
-
-// import "tabookey-gasless/contracts/RelayRecipient.sol";
-
-// contract SimpleStorage is RelayRecipient {
-//     constructor(address hub) public {
-//         // this is the only hub I trust to receive calls from
-//         init_relay_hub(RelayHub(hub));
-//     }
-
-//     uint storedData;
-
-//     function setValue(uint _v) public {
-//       storedData = _v;
-//     }
-
-//     function getValue() public view returns(uint) {
-//       return storedData;
-//     }
-
-//     function accept_relayed_call(address relay, address from, bytes memory encoded_function, uint gas_price, uint transaction_fee) public view returns(uint32) {
-//         return 0;
-//     }
-
-//     function post_relayed_call(address relay, address from, bytes memory encoded_function, bool success, uint used_gas, uint transaction_fee) public {
-//     }
-// }
-
 pragma solidity ^0.4.24;
 
+// import "tabookey-gasless/contracts/RelayRecipient.sol"; // TODO - Uncomment to use Portis
 
+// contract SimpleStorage is RelayRecipient { // TODO - Uncomment to use Portis
+//     constructor(address hub) public {      // TODO - Uncomment to use Portis
 contract SimpleStorage  {
     constructor() public {
         // this is the only hub I trust to receive calls from
-        Source1[0] = "Source1 0";
-        Source1[1] = "Source1 1";
-        Source1[2] = "Source1 2";
-        Source1[3] = "Source1 3";
+        // init_relay_hub(RelayHub(hub)); // TODO - Uncomment to use Portis
+        Source1[0] = "You will be very rich ";
+        Source1[1] = "You will be rich";
+        Source1[2] = "You will be poor";
+        Source1[3] = "You will be very poor";
 
-        Source2[0] = "Source2 0";
-        Source2[1] = "Source2 1";
-        Source2[2] = "Source2 2";
-        Source2[3] = "Source2 3";
+        Source2[0] = "very happy";
+        Source2[1] = "happy";
+        Source2[2] = "sad";
+        Source2[3] = "very sad";
 
-        Source3[0] = "Source3 0";
-        Source3[1] = "Source3 1";
-        Source3[2] = "Source3 2";
-        Source3[3] = "Source3 3";
+        Source3[0] = "have lots of friends!";
+        Source3[1] = "have some friends.";
+        Source3[2] = "have one friend.";
+        Source3[3] = "have no friend.";
     }
+
+    // TODO - Uncomment to use Portis
+    // function accept_relayed_call(address relay, address from, bytes memory encoded_function, uint gas_price, uint transaction_fee) public view returns(uint32) {
+    //     return 0;
+    // }
+
+    // function post_relayed_call(address relay, address from, bytes memory encoded_function, bool success, uint used_gas, uint transaction_fee) public {
+    // }
 
     string[4] Source1;
     string[4] Source2;
@@ -77,7 +61,7 @@ contract SimpleStorage  {
       uint random2 = uint(keccak256(abi.encodePacked(msg.sender, now+randomness+1)))%3;
       uint random3 = uint(keccak256(abi.encodePacked(msg.sender, now+randomness+2)))%3;
 
-      string memory _prediction = strConcat(Source1[random1]," ",Source2[random2]," ",Source3[random3]);
+      string memory _prediction = strConcat(Source1[random1],", ",Source2[random2]," and ",Source3[random3]);
 
       storedText = _prediction;
       predictions.push(Prediction(_prediction,msg.sender));
