@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import FortuneTellerContract from "./contracts/FortuneTeller.json";
 import getWeb3 from "./utils/getWeb3";
-import { ThemeProvider, Box, Flex, Card, Text, Heading, Button } from "rimble-ui";
+import { ThemeProvider, Box, Flex, Card, Text, Button } from "rimble-ui";
 import Header from "./components/Header.js";
 import Result from "./components/Result.js";
+import Introduction from "./components/Introduction.js";
 
 // TODO - Uncomment to use Portis
 // import Portis from "@portis/web3";
@@ -21,7 +22,8 @@ class App extends Component {
     web3: null,
     accounts: null,
     FortuneTellerContract: null,
-    timeToCheck: false
+    timeToCheck: false,
+    PredictionMade: false
   };
 
   componentDidMount = async () => {
@@ -51,7 +53,7 @@ class App extends Component {
           accounts,
           FortuneTellerContract: FortuneTellerInstance
         },
-        this.getvalueTest
+        this.getPrediction
       );
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -67,13 +69,22 @@ class App extends Component {
     }, 1000);
   };
 
-  getvalueTest = async () => {
+  getPrediction = async () => {
     const { accounts, FortuneTellerContract } = this.state;
     // Get the value from the contract to prove it worked.
-    const response = await FortuneTellerContract.methods.getValue().call();
-
-    // Update state with the result.
-    this.setState({ storageValue: response });
+    const response = await FortuneTellerContract.methods
+      .getPrediction(accounts[0])
+      .call();
+    console.log(response);
+    if(response.text.length !== 0){
+      this.setState({
+        PredictionMade: true,
+        storageText: response.text,
+        random1: response.random1,
+        random2: response.random2,
+        random3: response.random3,
+      });
+    }
   };
 
   runTest = async () => {
@@ -104,16 +115,7 @@ class App extends Component {
         // console.log(receipt);
       });
     // Update state with the result.
-    const response = await FortuneTellerContract.methods
-      .getPrediction(accounts[0])
-      .call();
-    console.log(response);
-    this.setState({
-      storageText: response.text,
-      random1: response.random1,
-      random2: response.random2,
-      random3: response.random3,
-    });
+    this.getPrediction()
   };
 
   payPrediction = async () => {
@@ -131,16 +133,7 @@ class App extends Component {
         // console.log(receipt);
       });
     // Update state with the result.
-    const response = await FortuneTellerContract.methods
-      .getPrediction(accounts[0])
-      .call();
-    console.log(response)
-    this.setState({
-      storageText: response.text,
-      random1: response.random1,
-      random2: response.random2,
-      random3: response.random3
-    });
+    this.getPrediction()
   };
 
   render() {
@@ -148,20 +141,52 @@ class App extends Component {
       <ThemeProvider>
         <Box>
           <Header />
-          <Flex maxWidth={"640px"} mx={"auto"} p={3}>
-            <Heading.h2 mr={3}>
-              <span role="img" aria-label="Waving hand">
-                👋
-              </span>
-            </Heading.h2>
+          <Introduction/>
 
-            <Text>Hi there, this is a dapp using Portis.</Text>
-          </Flex>
+          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
+            <Button
+              disabled={this.state.PredictionMade}
+              width={1}
+              onClick={() => {
+                this.callPrediction();
+              }}
+            >
+              {this.state.PredictionMade ? "I have read your future" : "Read your future 🔮"}
+            </Button>
+            <Result
+              random1={this.state.random1}
+              random2={this.state.random2}
+              random3={this.state.random3}
+              storageText={this.state.storageText}
+              PredictionMade={this.state.PredictionMade}
+            />
+          </Card>
 
+          {/* Pay to modify prediction */}
+          {this.state.PredictionMade &&
+            <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
+            <Flex maxWidth={"640px"} mx={"auto"} p={3}>
+              <Text>
+                I love money, so if you give me some ETH, I might use my power to change the future! Be generous, as my power depends on my gaiety.
+              </Text>
+            </Flex>
+              <Button
+                width={1}
+                onClick={() => {
+                  this.payPrediction();
+                }}
+              >
+              <p>Send me some <span style={{ textDecoration: "line-through" }}>love</span> ETH to change your future!</p>
+            </Button>
+            </Card>
+          }
+
+          {/* Displaying address */}
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             Your account is: {this.state.accounts && this.state.accounts[0]}
           </Card>
 
+          {/* //TODO! - ONLY FOR TEST - REMOVE FOR PROD */}
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <p>THIS BOX IS ONLY FOR TESTING A SIMPLE CONTRACT CALL</p>
             <div />
@@ -175,33 +200,6 @@ class App extends Component {
             <div>The stored value is: {this.state.storageValue}</div>
           </Card>
 
-          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
-            <Button
-              width={1}
-              onClick={() => {
-                this.callPrediction();
-              }}
-            >
-              I want to know my future!
-            </Button>
-            <Result
-              random1={this.state.random1}
-              random2={this.state.random2}
-              random3={this.state.random3}
-              storageText={this.state.storageText}
-            />
-          </Card>
-
-          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
-            <Button
-              width={1}
-              onClick={() => {
-                this.payPrediction();
-              }}
-            >
-              Pay to modify your future!
-            </Button>
-          </Card>
         </Box>
       </ThemeProvider>
     );

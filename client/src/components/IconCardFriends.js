@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Box, Heading, Text, Link, Flex, Button, Icon, Flash } from "rimble-ui";
+import { Card, Text } from "rimble-ui";
 
 class IconCard extends React.Component {
   render() {

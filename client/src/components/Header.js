@@ -6,7 +6,7 @@ class Header extends React.Component {
     return (
       <Box bg="primary" p={3} justifyContent="center" flexDirection="column">
         <Box maxWidth="400px" mx="auto">
-          <Heading fontSize={4} color={"white"}>My dapp title</Heading>
+          <Heading fontSize={4} color={"white"}>Irma: blockchain based visions</Heading>
         </Box>
       </Box>
     );
