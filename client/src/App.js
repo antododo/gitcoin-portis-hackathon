@@ -47,7 +47,7 @@ class App extends Component {
           accounts,
           FortuneTellerContract: FortuneTellerInstance,
         },
-        this.getvalue
+        this.getvalueTest
       );
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -63,7 +63,7 @@ class App extends Component {
     }, 1000);
   };
 
-  getvalue = async () => {
+  getvalueTest = async () => {
     const { accounts, FortuneTellerContract } = this.state;
     // Get the value from the contract to prove it worked.
     const response = await FortuneTellerContract.methods.getValue().call();
@@ -72,7 +72,7 @@ class App extends Component {
     this.setState({ storageValue: response });
   };
 
-  run = async () => {
+  runTest = async () => {
     const { accounts, FortuneTellerContract } = this.state;
     console.log("accounts: ", accounts);
 
@@ -96,14 +96,16 @@ class App extends Component {
     console.log("contract address: ", FortuneTellerContract.address);
     // Get the value from the contract
     await FortuneTellerContract.methods
-      .getPrediction()
+      .createPrediction()
       .send({ from: accounts[0] })
       .on("receipt", receipt => {
          console.log("receipt");
          console.log(receipt);
       });
     // Update state with the result.
-    const response = await FortuneTellerContract.methods.getText().call();
+    const response = await FortuneTellerContract.methods
+      .getPrediction(accounts[0])
+      .call();
     this.setState({ storageText: response });
   };
 
@@ -128,13 +130,12 @@ class App extends Component {
 
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <p>
-              Try changing the value stored on <strong>line 40</strong> of
-              App.js.
+              THIS BOX IS ONLY FOR TESTING A SIMPLE CONTRACT CALL
             </p>
             <div />
             <Button
               onClick={() => {
-                this.run();
+                this.runTest();
               }}
             >
               TEST - Increase value
