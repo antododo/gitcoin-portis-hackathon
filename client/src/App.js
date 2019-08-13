@@ -45,7 +45,7 @@ class App extends Component {
         {
           web3,
           accounts,
-          FortuneTellerContract: FortuneTellerInstance,
+          FortuneTellerContract: FortuneTellerInstance
         },
         this.getvalueTest
       );
@@ -99,8 +99,32 @@ class App extends Component {
       .createPrediction()
       .send({ from: accounts[0] })
       .on("receipt", receipt => {
-         console.log("receipt");
-         console.log(receipt);
+        console.log("receipt");
+        console.log(receipt);
+      });
+    // Update state with the result.
+    const response = await FortuneTellerContract.methods
+      .getPrediction(accounts[0])
+      .call();
+    this.setState({ storageText: response });
+  };
+
+  payPrediction = async () => {
+    const { accounts, FortuneTellerContract } = this.state;
+    console.log("accounts: ", accounts);
+    // Stores a given value, 5 by default.
+    console.log("contract address: ", FortuneTellerContract.address);
+
+    // convert value in ETH to WEI
+    let value = 1 * 1000000000000000000
+
+    // Get the value from the contract
+    await FortuneTellerContract.methods
+      .payPrediction()
+      .send({ from: accounts[0], value: value })
+      .on("receipt", receipt => {
+        console.log("receipt");
+        console.log(receipt);
       });
     // Update state with the result.
     const response = await FortuneTellerContract.methods
@@ -129,9 +153,7 @@ class App extends Component {
           </Card>
 
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
-            <p>
-              THIS BOX IS ONLY FOR TESTING A SIMPLE CONTRACT CALL
-            </p>
+            <p>THIS BOX IS ONLY FOR TESTING A SIMPLE CONTRACT CALL</p>
             <div />
             <Button
               onClick={() => {
@@ -149,6 +171,16 @@ class App extends Component {
               }}
             >
               I want to know my future!
+            </Button>
+            <div>{this.state.storageText}</div>
+          </Card>
+          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
+            <Button
+              onClick={() => {
+                this.payPrediction();
+              }}
+            >
+              Pay to modify your future!
             </Button>
             <div>{this.state.storageText}</div>
           </Card>
