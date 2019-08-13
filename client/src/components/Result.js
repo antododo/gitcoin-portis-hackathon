@@ -13,7 +13,11 @@ class Result extends React.Component {
           <IconCardHappiness value={this.props.random2} />
           <IconCardFriends value={this.props.random3} />
         </Flex>
-        <Text textAlign={"center"}>{this.props.storageText}</Text>
+        <Card bg="black" size="300px">
+          <Text color="white" textAlign={"center"}>
+            {this.props.storageText}
+          </Text>
+        </Card>
       </React.Fragment>
     );
   }
