@@ -79,7 +79,7 @@ class App extends Component {
     // Stores a given value, 5 by default.
     console.log("contract address: ", FortuneTellerContract.address);
     await FortuneTellerContract.methods
-      .setValue(this.state.storageValue++)
+      .setValue(Number(this.state.storageValue) + 1)
       .send({ from: accounts[0] });
 
     // Get the value from the contract to prove it worked.
