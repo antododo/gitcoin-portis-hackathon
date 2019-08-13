@@ -3,6 +3,7 @@ import FortuneTellerContract from "./contracts/FortuneTeller.json";
 import getWeb3 from "./utils/getWeb3";
 import { ThemeProvider, Box, Flex, Card, Text, Heading, Button } from "rimble-ui";
 import Header from "./components/Header.js";
+import Result from "./components/Result.js";
 
 // TODO - Uncomment to use Portis
 // import Portis from "@portis/web3";
@@ -14,6 +15,9 @@ class App extends Component {
   state = {
     storageValue: 0,
     storageText: "Click to know your future",
+    random1: null,
+    random2: null,
+    random3: null,
     web3: null,
     accounts: null,
     FortuneTellerContract: null,
@@ -91,29 +95,29 @@ class App extends Component {
 
   callPrediction = async () => {
     const { accounts, FortuneTellerContract } = this.state;
-    console.log("accounts: ", accounts);
-    // Stores a given value, 5 by default.
-    console.log("contract address: ", FortuneTellerContract.address);
     // Get the value from the contract
     await FortuneTellerContract.methods
       .createPrediction()
       .send({ from: accounts[0] })
       .on("receipt", receipt => {
-        console.log("receipt");
-        console.log(receipt);
+        // console.log("receipt");
+        // console.log(receipt);
       });
     // Update state with the result.
     const response = await FortuneTellerContract.methods
       .getPrediction(accounts[0])
       .call();
-    this.setState({ storageText: response });
+    console.log(response);
+    this.setState({
+      storageText: response.text,
+      random1: response.random1,
+      random2: response.random2,
+      random3: response.random3,
+    });
   };
 
   payPrediction = async () => {
     const { accounts, FortuneTellerContract } = this.state;
-    console.log("accounts: ", accounts);
-    // Stores a given value, 5 by default.
-    console.log("contract address: ", FortuneTellerContract.address);
 
     // convert value in ETH to WEI
     let value = 1 * 1000000000000000000
@@ -123,14 +127,20 @@ class App extends Component {
       .payPrediction()
       .send({ from: accounts[0], value: value })
       .on("receipt", receipt => {
-        console.log("receipt");
-        console.log(receipt);
+        // console.log("receipt");
+        // console.log(receipt);
       });
     // Update state with the result.
     const response = await FortuneTellerContract.methods
       .getPrediction(accounts[0])
       .call();
-    this.setState({ storageText: response });
+    console.log(response)
+    this.setState({
+      storageText: response.text,
+      random1: response.random1,
+      random2: response.random2,
+      random3: response.random3
+    });
   };
 
   render() {
@@ -164,25 +174,33 @@ class App extends Component {
             </Button>
             <div>The stored value is: {this.state.storageValue}</div>
           </Card>
+
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Button
+              width={1}
               onClick={() => {
                 this.callPrediction();
               }}
             >
               I want to know my future!
             </Button>
-            <div>{this.state.storageText}</div>
+            <Result
+              random1={this.state.random1}
+              random2={this.state.random2}
+              random3={this.state.random3}
+              storageText={this.state.storageText}
+            />
           </Card>
+
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Button
+              width={1}
               onClick={() => {
                 this.payPrediction();
               }}
             >
               Pay to modify your future!
             </Button>
-            <div>{this.state.storageText}</div>
           </Card>
         </Box>
       </ThemeProvider>

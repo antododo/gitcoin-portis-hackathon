@@ -38,10 +38,12 @@ contract FortuneTeller  {
 
     struct Prediction{
       string text;
-      address owner;
+      uint8 random1;
+      uint8 random2;
+      uint8 random3;
     }
 
-    mapping(address => string) OwnerToPrediction;
+    mapping(address => Prediction) OwnerToPrediction;
 
     uint storedData;
 
@@ -54,20 +56,22 @@ contract FortuneTeller  {
     }
 
     function createPrediction() public {
-      uint random1 = uint(keccak256(abi.encodePacked(msg.sender)))%4;
-      uint random2 = uint(keccak256(abi.encodePacked(msg.sender, 1)))%4; // +1 so result is different from random1
-      uint random3 = uint(keccak256(abi.encodePacked(msg.sender, 2)))%4; // +2 so result is different from random1 & random2
+      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%4;
+      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%4; // +1 so result is different from random1
+      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%4; // +2 so result is different from random1 & random2
 
-      OwnerToPrediction[msg.sender] = strConcat(Source1[random1],", ",Source2[random2]," and ",Source3[random3]);
+      string memory _text = strConcat(Source1[random1],", ",Source2[random2]," and ",Source3[random3]);
+
+      OwnerToPrediction[msg.sender] = Prediction(_text,random1,random2,random3);
     }
 
     function payPrediction() public payable {
       require(msg.value >= 10000000000000000, "You need to pay at least 0.01ETH to change your future!");
 
       // default values
-      uint random1 = uint(keccak256(abi.encodePacked(msg.sender)))%4;
-      uint random2 = uint(keccak256(abi.encodePacked(msg.sender, 1)))%4; // +1 so result is different from random1
-      uint random3 = uint(keccak256(abi.encodePacked(msg.sender, 2)))%4; // +2 so result is different from random1 & random2
+      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%4;
+      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%4; // +1 so result is different from random1
+      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%4; // +2 so result is different from random1 & random2
 
       if(msg.value >= 1000000000000000000 ){ // value >= 1 ETH
         // Max for everything
@@ -76,21 +80,28 @@ contract FortuneTeller  {
         random3 = 3;
       } else if (msg.value >= 100000000000000000){ // value >= 0.1 ETH
         // either 2 or 3
-        random1 = 3 - uint(keccak256(abi.encodePacked(msg.sender)))%2;
-        random2 = 3 - uint(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
-        random3 = 3 - uint(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
+        random1 = 3 - uint8(keccak256(abi.encodePacked(msg.sender)))%2;
+        random2 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
+        random3 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
       } else if (msg.value >= 10000000000000000){ // value >= 0.01 ETH
         // either 0 or 1
-        random1 = 1 - uint(keccak256(abi.encodePacked(msg.sender)))%2;
-        random2 = 1 - uint(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
-        random3 = 1 - uint(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
+        random1 = 1 - uint8(keccak256(abi.encodePacked(msg.sender)))%2;
+        random2 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
+        random3 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
       }
 
-      OwnerToPrediction[msg.sender] = strConcat(Source1[random1],", ",Source2[random2]," and ",Source3[random3]);
+      string memory _text = strConcat(Source1[random1],", ",Source2[random2]," and ",Source3[random3]);
+
+      OwnerToPrediction[msg.sender] = Prediction(_text,random1,random2,random3);
     }
 
-    function getPrediction(address owner) public view returns(string) {
-      return OwnerToPrediction[owner];
+    function getPrediction(address owner) public view returns(string memory text, uint random1, uint random2, uint random3)
+      {
+      Prediction memory _prediction = OwnerToPrediction[owner];
+      text = _prediction.text;
+      random1 = uint(_prediction.random1);
+      random2 = uint(_prediction.random2);
+      random3 = uint(_prediction.random3);
     }
 
     function strConcat(string _a, string _b, string _c, string _d, string _e) internal pure returns (string) {
