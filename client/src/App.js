@@ -76,7 +76,7 @@ class App extends Component {
       .getPrediction(accounts[0])
       .call();
     console.log(response);
-    if(response.text.length !== 0){
+    if( response && response.text.length !== 0){
       this.setState({
         sliderValue: 10,
         displayValue: 0.1,
