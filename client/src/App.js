@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import FortuneTellerContract from "./contracts/FortuneTeller.json";
 import getWeb3 from "./utils/getWeb3";
 import { ThemeProvider, Box, Flex, Card, Text, Heading, Button } from "rimble-ui";
 import Header from "./components/Header.js";
@@ -16,7 +16,7 @@ class App extends Component {
     storageText: "Click to know your future",
     web3: null,
     accounts: null,
-    SimpleStorageContract: null,
+    FortuneTellerContract: null,
     timeToCheck: false
   };
 
@@ -31,11 +31,11 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = SimpleStorageContract.networks[networkId];
+      const deployedNetwork = FortuneTellerContract.networks[networkId];
       console.log(deployedNetwork);
       console.log(deployedNetwork.address);
-      const SimpleStorageInstance = new web3.eth.Contract(
-        SimpleStorageContract.abi,
+      const FortuneTellerInstance = new web3.eth.Contract(
+        FortuneTellerContract.abi,
         deployedNetwork && deployedNetwork.address
       );
 
@@ -45,7 +45,7 @@ class App extends Component {
         {
           web3,
           accounts,
-          SimpleStorageContract: SimpleStorageInstance,
+          FortuneTellerContract: FortuneTellerInstance,
         },
         this.getvalue
       );
@@ -64,38 +64,38 @@ class App extends Component {
   };
 
   getvalue = async () => {
-    const { accounts, SimpleStorageContract } = this.state;
+    const { accounts, FortuneTellerContract } = this.state;
     // Get the value from the contract to prove it worked.
-    const response = await SimpleStorageContract.methods.getValue().call();
+    const response = await FortuneTellerContract.methods.getValue().call();
 
     // Update state with the result.
     this.setState({ storageValue: response });
   };
 
   run = async () => {
-    const { accounts, SimpleStorageContract } = this.state;
+    const { accounts, FortuneTellerContract } = this.state;
     console.log("accounts: ", accounts);
 
     // Stores a given value, 5 by default.
-    console.log("contract address: ", SimpleStorageContract.address);
-    await SimpleStorageContract.methods
+    console.log("contract address: ", FortuneTellerContract.address);
+    await FortuneTellerContract.methods
       .setValue(this.state.storageValue++)
       .send({ from: accounts[0] });
 
     // Get the value from the contract to prove it worked.
-    const response = await SimpleStorageContract.methods.getValue().call();
+    const response = await FortuneTellerContract.methods.getValue().call();
 
     // Update state with the result.
     this.setState({ storageValue: response });
   };
 
   callPrediction = async () => {
-    const { accounts, SimpleStorageContract } = this.state;
+    const { accounts, FortuneTellerContract } = this.state;
     console.log("accounts: ", accounts);
     // Stores a given value, 5 by default.
-    console.log("contract address: ", SimpleStorageContract.address);
+    console.log("contract address: ", FortuneTellerContract.address);
     // Get the value from the contract
-    await SimpleStorageContract.methods
+    await FortuneTellerContract.methods
       .getPrediction()
       .send({ from: accounts[0] })
       .on("receipt", receipt => {
@@ -103,7 +103,7 @@ class App extends Component {
          console.log(receipt);
       });
     // Update state with the result.
-    const response = await SimpleStorageContract.methods.getText().call();
+    const response = await FortuneTellerContract.methods.getText().call();
     this.setState({ storageText: response });
   };
 

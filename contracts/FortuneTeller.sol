@@ -2,9 +2,9 @@ pragma solidity ^0.4.24;
 
 // import "tabookey-gasless/contracts/RelayRecipient.sol"; // TODO - Uncomment to use Portis
 
-// contract SimpleStorage is RelayRecipient { // TODO - Uncomment to use Portis
+// contract FortuneTeller is RelayRecipient { // TODO - Uncomment to use Portis
 //     constructor(address hub) public {      // TODO - Uncomment to use Portis
-contract SimpleStorage  {
+contract FortuneTeller  {
     constructor() public {
         // this is the only hub I trust to receive calls from
         // init_relay_hub(RelayHub(hub)); // TODO - Uncomment to use Portis
