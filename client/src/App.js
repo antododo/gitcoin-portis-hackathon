@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FortuneTellerContract from "./contracts/FortuneTeller.json";
 import getWeb3 from "./utils/getWeb3";
-import { ThemeProvider, Box, Flex, Card, Text, Button } from "rimble-ui";
+import { ThemeProvider, Box, Flex, Card, Text, Button, Slider} from "rimble-ui";
 import Header from "./components/Header.js";
 import Result from "./components/Result.js";
 import Introduction from "./components/Introduction.js";
@@ -78,6 +78,8 @@ class App extends Component {
     console.log(response);
     if(response.text.length !== 0){
       this.setState({
+        sliderValue: 10,
+        displayValue: 0.1,
         PredictionMade: true,
         storageText: response.text,
         random1: response.random1,
@@ -122,7 +124,7 @@ class App extends Component {
     const { accounts, FortuneTellerContract } = this.state;
 
     // convert value in ETH to WEI
-    let value = 1 * 1000000000000000000
+    let value = this.state.displayValue * 1000000000000000000
 
     // Get the value from the contract
     await FortuneTellerContract.methods
@@ -143,6 +145,7 @@ class App extends Component {
           <Header />
           <Introduction/>
 
+          {/* Prediction */}
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Button
               disabled={this.state.PredictionMade}
@@ -170,14 +173,22 @@ class App extends Component {
                 I love money, so if you give me some ETH, I might use my power to change the future! Be generous, as my power depends on my gaiety.
               </Text>
             </Flex>
-              <Button
-                width={1}
-                onClick={() => {
-                  this.payPrediction();
+            <Flex width={1}>
+              <Slider width={1} min={"1"} max={"200"} step={"1"} value={this.state.sliderValue}
+                onInput={(e) => {
+                  console.log(e.target.value)
+                  this.setState({ sliderValue: e.target.value, displayValue: e.target.value / 100 })
                 }}
-              >
-              <p>Send me some <span style={{ textDecoration: "line-through" }}>love</span> ETH to change your future!</p>
-            </Button>
+              />
+            </Flex>
+            <Button
+              width={1}
+              onClick={() => {
+                this.payPrediction();
+              }}
+            >
+              <p>Send me <span style={{ textDecoration: "line-through", color: "#ddd" }}>some love</span> {this.state.displayValue} ETH to change your future!</p>
+          </Button>
             </Card>
           }
 
