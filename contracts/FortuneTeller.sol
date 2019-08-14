@@ -83,14 +83,14 @@ contract FortuneTeller  {
         random3 = 4;
       } else if (msg.value >= 300000000000000000){ // value >= 0.3 ETH
         // either 2 or 3
-        random1 = 3 - uint8(keccak256(abi.encodePacked(msg.sender)))%2;
-        random2 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
-        random3 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
+        random1 = 3 - uint8(keccak256(abi.encodePacked(msg.sender,now)))%2;     // +now, so user can pay multiple time for different results
+        random2 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, now+1)))%2;  // +1 so result is different from random1
+        random3 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, now+2)))%2;  // +2 so result is different from random1 & random2
       } else if (msg.value >= 50000000000000000){ // value >= 0.05 ETH
         // either 0 or 1
-        random1 = 1 - uint8(keccak256(abi.encodePacked(msg.sender)))%2;
-        random2 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
-        random3 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
+        random1 = 1 - uint8(keccak256(abi.encodePacked(msg.sender,now)))%2;     // +now, so user can pay multiple time for different results
+        random2 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, now+1)))%2;  // +1 so result is different from random1
+        random3 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, now+2)))%2;  // +2 so result is different from random1 & random2
       }
 
       string memory _text = strConcat(Source1[random1]," and ",Source2[random2],"",Source3[random3]);
