@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FortuneTellerContract from "./contracts/FortuneTeller.json";
 import getWeb3 from "./utils/getWeb3";
-import { ThemeProvider, Box, Flex, Card, Text, Button, Slider} from "rimble-ui";
+import { ThemeProvider, Box, Flex, Card, Text, Button, Slider, Input} from "rimble-ui";
 import Header from "./components/Header.js";
 import Result from "./components/Result.js";
 import Introduction from "./components/Introduction.js";
@@ -23,7 +23,8 @@ class App extends Component {
     accounts: null,
     FortuneTellerContract: null,
     timeToCheck: false,
-    PredictionMade: false
+    PredictionMade: false,
+    sliderValue: 0
   };
 
   componentDidMount = async () => {
@@ -78,8 +79,7 @@ class App extends Component {
     console.log(response);
     if( response && response.text.length !== 0){
       this.setState({
-        sliderValue: 10,
-        displayValue: 0.1,
+        sliderValue: 0.5,
         PredictionMade: true,
         storageText: response.text,
         random1: response.random1,
@@ -170,25 +170,30 @@ class App extends Component {
             <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Flex maxWidth={"640px"} mx={"auto"} p={3}>
               <Text>
-                I love money, so if you give me some ETH, I might use my power to change the future! Be generous, as my power depends on my gaiety.
+                <Text fontWeight={'bold'}>Not happy with your future?</Text> My great power depends on my gaiety, so if you send me enought ETH to make me happy, I migth be able to change your future for the best!
               </Text>
             </Flex>
             <Flex width={1}>
-              <Slider width={1} min={"1"} max={"200"} step={"1"} value={this.state.sliderValue}
-                onInput={(e) => {
-                  console.log(e.target.value)
-                  this.setState({ sliderValue: e.target.value, displayValue: e.target.value / 100 })
+              <Flex width={0.5} textAlign={"center"}>
+                <Input type="number" min={"0.01"} step={"0.1"}
+                  m={"auto"}
+                  value={this.state.sliderValue}
+                  onInput={(e) => {
+                    console.log(e.target.value)
+                    this.setState({ sliderValue: e.target.value })
+                  }}
+                />
+              </Flex>
+              <Button
+                width={0.5}
+                onClick={() => {
+                  this.payPrediction();
                 }}
-              />
+              >
+                <p>Send me {this.state.sliderValue} ETH</p>
+              </Button>
             </Flex>
-            <Button
-              width={1}
-              onClick={() => {
-                this.payPrediction();
-              }}
-            >
-              <p>Send me <span style={{ textDecoration: "line-through", color: "#ddd" }}>some love</span> {this.state.displayValue} ETH to change your future!</p>
-          </Button>
+
             </Card>
           }
 
