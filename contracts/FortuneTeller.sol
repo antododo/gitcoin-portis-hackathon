@@ -71,22 +71,22 @@ contract FortuneTeller  {
     function payPrediction() public payable {
       require(msg.value >= 10000000000000000, "You need to pay at least 0.01ETH to change your future!");
 
-      // default values
-      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%5;
-      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%5; // +1 so result is different from random1
-      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%5; // +2 so result is different from random1 & random2
+      // default values to minimum
+      uint8 random1 = 0;
+      uint8 random2 = 0;
+      uint8 random3 = 0;
 
-      if(msg.value >= 1000000000000000000 ){ // value >= 1 ETH
+      if(msg.value >= 1200000000000000000 ){ // value >= 1.2 ETH
         // Max for everything
         random1 = 4;
         random2 = 4;
         random3 = 4;
-      } else if (msg.value >= 100000000000000000){ // value >= 0.1 ETH
+      } else if (msg.value >= 300000000000000000){ // value >= 0.3 ETH
         // either 2 or 3
         random1 = 3 - uint8(keccak256(abi.encodePacked(msg.sender)))%2;
         random2 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
         random3 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
-      } else if (msg.value >= 10000000000000000){ // value >= 0.01 ETH
+      } else if (msg.value >= 50000000000000000){ // value >= 0.05 ETH
         // either 0 or 1
         random1 = 1 - uint8(keccak256(abi.encodePacked(msg.sender)))%2;
         random2 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, 1)))%2; // +1 so result is different from random1
