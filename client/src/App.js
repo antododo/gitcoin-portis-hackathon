@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FortuneTellerContract from "./contracts/FortuneTeller.json";
 import getWeb3 from "./utils/getWeb3";
-import { ThemeProvider, Box, Flex, Card, Text, Button, Slider, Input} from "rimble-ui";
+import { ThemeProvider, Box, Flex, Card, Text, Button, ToastMessage, Input} from "rimble-ui";
 import Header from "./components/Header.js";
 import Result from "./components/Result.js";
 import Introduction from "./components/Introduction.js";
@@ -23,7 +23,8 @@ class App extends Component {
     accounts: null,
     FortuneTellerContract: null,
     timeToCheck: false,
-    PredictionMade: false,
+    waitingTransaction: false,
+    predictionMade: false,
     inputValue: 0
   };
 
@@ -77,10 +78,11 @@ class App extends Component {
       .getPrediction(accounts[0])
       .call();
     console.log(response);
+    this.setState({ waitingTransaction: false})
     if( response && response.text.length !== 0){
       this.setState({
         inputValue: 0.5,
-        PredictionMade: true,
+        predictionMade: true,
         storageText: response.text,
         random1: response.random1,
         random2: response.random2,
@@ -112,8 +114,11 @@ class App extends Component {
     await FortuneTellerContract.methods
       .createPrediction()
       .send({ from: accounts[0] })
+      .on('transactionHash', (hash) => {
+        this.setState({ waitingTransaction: true, hashLink: `https://ropsten.etherscan.io/tx/${hash}`});
+      })
       .on("receipt", receipt => {
-        // console.log("receipt");
+        console.log("receipt");
         // console.log(receipt);
       });
     // Update state with the result.
@@ -130,8 +135,11 @@ class App extends Component {
     await FortuneTellerContract.methods
       .payPrediction()
       .send({ from: accounts[0], value: value })
+      .on('transactionHash', (hash) => {
+        this.setState({ waitingTransaction: true, hashLink: `https://ropsten.etherscan.io/tx/${hash}`});
+      })
       .on("receipt", receipt => {
-        // console.log("receipt");
+        console.log("receipt");
         // console.log(receipt);
       });
     // Update state with the result.
@@ -148,25 +156,27 @@ class App extends Component {
           {/* Prediction */}
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Button
-              disabled={this.state.PredictionMade}
+              disabled={this.state.predictionMade}
               width={1}
               onClick={() => {
                 this.callPrediction();
               }}
             >
-              {this.state.PredictionMade ? "I have read your future" : "Read your future 🔮"}
+              {this.state.predictionMade ? "I have read your future" : "Read your future 🔮"}
             </Button>
             <Result
+              waitingTransaction = {this.state.waitingTransaction}
+              hashLink = {this.state.hashLink}
               random1={this.state.random1}
               random2={this.state.random2}
               random3={this.state.random3}
               storageText={this.state.storageText}
-              PredictionMade={this.state.PredictionMade}
+              predictionMade={this.state.predictionMade}
             />
           </Card>
 
           {/* Pay to modify prediction */}
-          {this.state.PredictionMade &&
+          {this.state.predictionMade &&
             <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Flex maxWidth={"640px"} mx={"auto"} p={3}>
               <Text>
@@ -178,8 +188,7 @@ class App extends Component {
                 <Input type="number" min={"0.01"} step={"0.1"}
                   m={"auto"}
                   value={this.state.inputValue}
-                  onInput={(e) => {
-                    console.log(e.target.value)
+                  onChange={(e) => {
                     this.setState({ inputValue: e.target.value })
                   }}
                 />
