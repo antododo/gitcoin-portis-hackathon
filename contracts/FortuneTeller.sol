@@ -1,13 +1,13 @@
 pragma solidity ^0.4.24;
 
-// import "tabookey-gasless/contracts/RelayRecipient.sol"; // TODO - Uncomment to use Portis
+import "tabookey-gasless/contracts/RelayRecipient.sol"; // TODO - Uncomment to use Portis
 
-// contract FortuneTeller is RelayRecipient { // TODO - Uncomment to use Portis
-//     constructor(address hub) public {      // TODO - Uncomment to use Portis
-contract FortuneTeller  {
-  constructor() public {
+contract FortuneTeller is RelayRecipient { // TODO - Uncomment to use Portis
+    constructor(address hub) public {      // TODO - Uncomment to use Portis
+// contract FortuneTeller  {
+//   constructor() public {
     // this is the only hub I trust to receive calls from
-    // init_relay_hub(RelayHub(hub)); // TODO - Uncomment to use Portis
+    init_relay_hub(RelayHub(hub)); // TODO - Uncomment to use Portis
     Source1[4] = "You will be richer than Jeff Bezos";
     Source1[3] = "You will win the lottery";
     Source1[2] = "Your intuition will be your key to financial wisdom";
@@ -28,12 +28,12 @@ contract FortuneTeller  {
 }
 
     // TODO - Uncomment to use Portis
-    // function accept_relayed_call(address relay, address from, bytes memory encoded_function, uint gas_price, uint transaction_fee) public view returns(uint32) {
-    //     return 0;
-    // }
+    function accept_relayed_call(address relay, address from, bytes memory encoded_function, uint gas_price, uint transaction_fee) public view returns(uint32) {
+        return 0;
+    }
 
-    // function post_relayed_call(address relay, address from, bytes memory encoded_function, bool success, uint used_gas, uint transaction_fee) public {
-    // }
+    function post_relayed_call(address relay, address from, bytes memory encoded_function, bool success, uint used_gas, uint transaction_fee) public {
+    }
 
     string[5] Source1;
     string[5] Source2;
@@ -59,13 +59,13 @@ contract FortuneTeller  {
     }
 
     function createPrediction() public {
-      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%5;
-      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%5; // +1 so result is different from random1
-      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%5; // +2 so result is different from random1 & random2
+      uint8 random1 = uint8(keccak256(abi.encodePacked(get_sender())))%5;
+      uint8 random2 = uint8(keccak256(abi.encodePacked(get_sender(), 1)))%5; // +1 so result is different from random1
+      uint8 random3 = uint8(keccak256(abi.encodePacked(get_sender(), 2)))%5; // +2 so result is different from random1 & random2
 
       string memory _text = strConcat(Source1[random1]," and ",Source2[random2],"",Source3[random3]);
 
-      OwnerToPrediction[msg.sender] = Prediction(_text,random1,random2,random3);
+      OwnerToPrediction[get_sender()] = Prediction(_text,random1,random2,random3);
     }
 
     function payPrediction() public payable {
@@ -83,19 +83,19 @@ contract FortuneTeller  {
         random3 = 4;
       } else if (msg.value >= 300000000000000000){ // value >= 0.3 ETH
         // either 2 or 3
-        random1 = 3 - uint8(keccak256(abi.encodePacked(msg.sender,now)))%2;     // +now, so user can pay multiple time for different results
-        random2 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, now+1)))%2;  // +1 so result is different from random1
-        random3 = 3 - uint8(keccak256(abi.encodePacked(msg.sender, now+2)))%2;  // +2 so result is different from random1 & random2
+        random1 = 3 - uint8(keccak256(abi.encodePacked(get_sender(),now)))%2;     // +now, so user can pay multiple time for different results
+        random2 = 3 - uint8(keccak256(abi.encodePacked(get_sender(), now+1)))%2;  // +1 so result is different from random1
+        random3 = 3 - uint8(keccak256(abi.encodePacked(get_sender(), now+2)))%2;  // +2 so result is different from random1 & random2
       } else if (msg.value >= 50000000000000000){ // value >= 0.05 ETH
         // either 0 or 1
-        random1 = 1 - uint8(keccak256(abi.encodePacked(msg.sender,now)))%2;     // +now, so user can pay multiple time for different results
-        random2 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, now+1)))%2;  // +1 so result is different from random1
-        random3 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, now+2)))%2;  // +2 so result is different from random1 & random2
+        random1 = 1 - uint8(keccak256(abi.encodePacked(get_sender(),now)))%2;     // +now, so user can pay multiple time for different results
+        random2 = 1 - uint8(keccak256(abi.encodePacked(get_sender(), now+1)))%2;  // +1 so result is different from random1
+        random3 = 1 - uint8(keccak256(abi.encodePacked(get_sender(), now+2)))%2;  // +2 so result is different from random1 & random2
       }
 
       string memory _text = strConcat(Source1[random1]," and ",Source2[random2],"",Source3[random3]);
 
-      OwnerToPrediction[msg.sender] = Prediction(_text,random1,random2,random3);
+      OwnerToPrediction[get_sender()] = Prediction(_text,random1,random2,random3);
     }
 
     function getPrediction(address owner) public view returns(string memory text, uint random1, uint random2, uint random3)

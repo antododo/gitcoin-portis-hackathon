@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import FortuneTellerContract from "./contracts/FortuneTeller.json";
-import getWeb3 from "./utils/getWeb3";
-import { ThemeProvider, Box, Flex, Card, Text, Button, ToastMessage, Input} from "rimble-ui";
+// import getWeb3 from "./utils/getWeb3";
+import { ThemeProvider, Box, Flex, Card, Text, Button, Input, Flash} from "rimble-ui";
 import Header from "./components/Header.js";
 import Result from "./components/Result.js";
 import Introduction from "./components/Introduction.js";
 
 // TODO - Uncomment to use Portis
-// import Portis from "@portis/web3";
-// import Web3 from "web3";
-// const portis = new Portis("fbfb6587-b2f3-4c96-8128-845e20a0d0c5", "ropsten", {gasRelay: true });
-// const web3 = new Web3(portis.provider);
+import Portis from "@portis/web3";
+import Web3 from "web3";
+const portis = new Portis("dae9a9af-6535-4523-9a54-ac231a2deb6e", "ropsten", {gasRelay: true });
+const web3 = new Web3(portis.provider);
 
 class App extends Component {
   state = {
@@ -31,11 +31,11 @@ class App extends Component {
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
-      const web3 = await getWeb3(); // TODO - Comment to use Portis
+      // const web3 = await getWeb3(); // TODO - Comment to use Portis
 
       // Use web3 to get the user's accounts.
-      const accounts = await web3.eth.getAccounts(); // TODO - Comment to use Portis
-      // const accounts = await portis.provider.enable(); // TODO - Uncomment to use Portis
+      // const accounts = await web3.eth.getAccounts(); // TODO - Comment to use Portis
+      const accounts = await portis.provider.enable(); // TODO - Uncomment to use Portis
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
@@ -147,11 +147,47 @@ class App extends Component {
   };
 
   render() {
+    if(!this.state.accounts){
+      return(
+        <ThemeProvider>
+          <Box>
+            <Header/>
+            <Introduction/>
+            <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
+              <Flash my={3}>
+                <Text fontSize={"5em"} textAlign={"center"}>
+                  <span role="img" aria-label="Crystall ball">
+                    👀
+                  </span>
+                </Text>
+                <Text>
+                  Before everything, I need to know your blockchain address.
+                  Let me see if I can find it...
+                  If I don't find it, could you log into Portis so I can read your blockchain address?
+                </Text>
+                <Button width={1} onClick={() => { portis.showPortis() }}> Log into Portis</Button>
+              </Flash>
+            </Card>
+          </Box>
+        </ThemeProvider>
+      )
+    }
+
     return (
       <ThemeProvider>
         <Box>
           <Header />
           <Introduction/>
+
+          {/* Displaying address */}
+          {this.state.accounts &&
+            <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
+              <Flash my={3}>
+                Good! Your blockchain address is: {this.state.accounts[0]}
+              </Flash>
+            </Card>
+
+          }
 
           {/* Prediction */}
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
@@ -205,11 +241,6 @@ class App extends Component {
 
             </Card>
           }
-
-          {/* Displaying address */}
-          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
-            Your account is: {this.state.accounts && this.state.accounts[0]}
-          </Card>
 
           {/* //TODO! - ONLY FOR TEST - REMOVE FOR PROD */}
           <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
