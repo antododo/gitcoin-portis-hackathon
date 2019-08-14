@@ -10,21 +10,21 @@ contract FortuneTeller  {
     // init_relay_hub(RelayHub(hub)); // TODO - Uncomment to use Portis
     Source1[4] = "You will be richer than Jeff Bezos";
     Source1[3] = "You will win the lottery";
-    Source1[2] = "Your intuition could be your key to financial wisdom";
-    Source1[1] = "You will lose lot of money playing Candy Crush";
-    Source1[0] = "Captain Hook will steal all your money";
+    Source1[2] = "Your intuition will be your key to financial wisdom";
+    Source1[1] = "You will lose all your money playing Candy Crush";
+    Source1[0] = "Captain Hook will kidnap you and steal all your money";
 
     Source2[4] = "you will be the first human to live on Mars.";
-    Source2[3] = "you will won a Nobel Peace Prize.";
+    Source2[3] = "you will win a Nobel Peace Prize.";
     Source2[2] = "you will become allergic to chocolate.";
     Source2[1] = "you will have hiccup for the rest of your life.";
     Source2[0] = "you will be captured by aliens who will dissect your brain...and find nothing.";
 
-    Source3[4] = "Don't forget, focus on what is truly important to you.";
-    Source3[3] = "Don't forget, focus on the positives and face the negatives with confidence.";
-    Source3[2] = "Don't forget, fou future may or may not depends on your past.";
-    Source3[1] = "Don't forget, find the courage to trust what your feeling tells you.";
-    Source3[0] = "Don't forget, life is a delicate balance of positivity and negativity.";
+    Source3[4] = "But don't forget, focus on what is truly important to you.";
+    Source3[3] = "But don't forget, focus on the positives and face the negatives with confidence.";
+    Source3[2] = "But don't forget, fou future may or may not depends on your past.";
+    Source3[1] = "But don't forget, find the courage to trust what your feeling tells you.";
+    Source3[0] = "But don't forget, life is a delicate balance of positivity and negativity.";
 }
 
     // TODO - Uncomment to use Portis
