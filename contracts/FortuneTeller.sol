@@ -8,20 +8,23 @@ contract FortuneTeller  {
   constructor() public {
     // this is the only hub I trust to receive calls from
     // init_relay_hub(RelayHub(hub)); // TODO - Uncomment to use Portis
-    Source1[3] = "You will be very rich";
-    Source1[2] = "You will be rich";
-    Source1[1] = "You will be poor";
-    Source1[0] = "You will be very poor";
+    Source1[4] = "You will be richer than Jeff Bezos";
+    Source1[3] = "You will win the lottery";
+    Source1[2] = "Your intuition could be your key to financial wisdom";
+    Source1[1] = "You will lose lot of money playing Candy Crush";
+    Source1[0] = "Captain Hook will steal all your money";
 
-    Source2[3] = "very happy";
-    Source2[2] = "happy";
-    Source2[1] = "sad";
-    Source2[0] = "very sad";
+    Source2[4] = "you will be the first human to live on Mars.";
+    Source2[3] = "you will won a Nobel Peace Prize.";
+    Source2[2] = "you will become allergic to chocolate.";
+    Source2[1] = "you will have hiccup for the rest of your life.";
+    Source2[0] = "you will be captured by aliens who will dissect your brain...and find nothing.";
 
-    Source3[3] = "have lots of friends!";
-    Source3[2] = "have some friends.";
-    Source3[1] = "have one friend.";
-    Source3[0] = "have no friend.";
+    Source3[4] = "Don't forget, focus on what is truly important to you.";
+    Source3[3] = "Don't forget, focus on the positives and face the negatives with confidence.";
+    Source3[2] = "Don't forget, fou future may or may not depends on your past.";
+    Source3[1] = "Don't forget, find the courage to trust what your feeling tells you.";
+    Source3[0] = "Don't forget, life is a delicate balance of positivity and negativity.";
 }
 
     // TODO - Uncomment to use Portis
@@ -32,9 +35,9 @@ contract FortuneTeller  {
     // function post_relayed_call(address relay, address from, bytes memory encoded_function, bool success, uint used_gas, uint transaction_fee) public {
     // }
 
-    string[4] Source1;
-    string[4] Source2;
-    string[4] Source3;
+    string[5] Source1;
+    string[5] Source2;
+    string[5] Source3;
 
     struct Prediction{
       string text;
@@ -56,11 +59,11 @@ contract FortuneTeller  {
     }
 
     function createPrediction() public {
-      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%4;
-      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%4; // +1 so result is different from random1
-      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%4; // +2 so result is different from random1 & random2
+      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%5;
+      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%5; // +1 so result is different from random1
+      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%5; // +2 so result is different from random1 & random2
 
-      string memory _text = strConcat(Source1[random1],", ",Source2[random2]," and ",Source3[random3]);
+      string memory _text = strConcat(Source1[random1]," and ",Source2[random2],"",Source3[random3]);
 
       OwnerToPrediction[msg.sender] = Prediction(_text,random1,random2,random3);
     }
@@ -69,15 +72,15 @@ contract FortuneTeller  {
       require(msg.value >= 10000000000000000, "You need to pay at least 0.01ETH to change your future!");
 
       // default values
-      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%4;
-      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%4; // +1 so result is different from random1
-      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%4; // +2 so result is different from random1 & random2
+      uint8 random1 = uint8(keccak256(abi.encodePacked(msg.sender)))%5;
+      uint8 random2 = uint8(keccak256(abi.encodePacked(msg.sender, 1)))%5; // +1 so result is different from random1
+      uint8 random3 = uint8(keccak256(abi.encodePacked(msg.sender, 2)))%5; // +2 so result is different from random1 & random2
 
       if(msg.value >= 1000000000000000000 ){ // value >= 1 ETH
         // Max for everything
-        random1 = 3;
-        random2 = 3;
-        random3 = 3;
+        random1 = 4;
+        random2 = 4;
+        random3 = 4;
       } else if (msg.value >= 100000000000000000){ // value >= 0.1 ETH
         // either 2 or 3
         random1 = 3 - uint8(keccak256(abi.encodePacked(msg.sender)))%2;
@@ -90,7 +93,7 @@ contract FortuneTeller  {
         random3 = 1 - uint8(keccak256(abi.encodePacked(msg.sender, 2)))%2; // +2 so result is different from random1 & random2
       }
 
-      string memory _text = strConcat(Source1[random1],", ",Source2[random2]," and ",Source3[random3]);
+      string memory _text = strConcat(Source1[random1]," and ",Source2[random2],"",Source3[random3]);
 
       OwnerToPrediction[msg.sender] = Prediction(_text,random1,random2,random3);
     }

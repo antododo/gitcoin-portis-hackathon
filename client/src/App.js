@@ -24,7 +24,7 @@ class App extends Component {
     FortuneTellerContract: null,
     timeToCheck: false,
     PredictionMade: false,
-    sliderValue: 0
+    inputValue: 0
   };
 
   componentDidMount = async () => {
@@ -79,7 +79,7 @@ class App extends Component {
     console.log(response);
     if( response && response.text.length !== 0){
       this.setState({
-        sliderValue: 0.5,
+        inputValue: 0.5,
         PredictionMade: true,
         storageText: response.text,
         random1: response.random1,
@@ -124,7 +124,7 @@ class App extends Component {
     const { accounts, FortuneTellerContract } = this.state;
 
     // convert value in ETH to WEI
-    let value = this.state.displayValue * 1000000000000000000
+    let value = this.state.inputValue * 1000000000000000000
 
     // Get the value from the contract
     await FortuneTellerContract.methods
@@ -177,10 +177,10 @@ class App extends Component {
               <Flex width={0.5} textAlign={"center"}>
                 <Input type="number" min={"0.01"} step={"0.1"}
                   m={"auto"}
-                  value={this.state.sliderValue}
+                  value={this.state.inputValue}
                   onInput={(e) => {
                     console.log(e.target.value)
-                    this.setState({ sliderValue: e.target.value })
+                    this.setState({ inputValue: e.target.value })
                   }}
                 />
               </Flex>
@@ -190,7 +190,7 @@ class App extends Component {
                   this.payPrediction();
                 }}
               >
-                <p>Send me {this.state.sliderValue} ETH</p>
+                <p>Send me {this.state.inputValue} ETH</p>
               </Button>
             </Flex>
 

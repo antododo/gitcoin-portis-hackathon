@@ -1,8 +1,8 @@
 import React from "react";
 import { Card, Text, Flex } from "rimble-ui";
 import IconCardWealth from "./IconCardWealth"
-import IconCardFriends from "./IconCardFriends"
-import IconCardHappiness from "./IconCardHappiness"
+import IconCardWisdom from "./IconCardWisdom"
+import IconCardLife from "./IconCardLife"
 
 class Result extends React.Component {
   render() {
@@ -20,8 +20,8 @@ class Result extends React.Component {
         }
         <Flex maxWidth={"640px"} mx={"auto"} p={3}>
           <IconCardWealth value={this.props.random1} />
-          <IconCardHappiness value={this.props.random2} />
-          <IconCardFriends value={this.props.random3} />
+          <IconCardLife value={this.props.random2} />
+          <IconCardWisdom value={this.props.random3} />
         </Flex>
       </React.Fragment>
     );

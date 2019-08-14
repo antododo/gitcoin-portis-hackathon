@@ -10,23 +10,29 @@ class IconCard extends React.Component {
     );
     if ( this.props.value && Number(this.props.value) === 0) {
       display = (
-        <span role="img" aria-label="Spiderweb">
-          🕸
+        <span role="img" aria-label="skull and crossbones">
+          ☠️
         </span>
       );
     } else if (Number(this.props.value) === 1) {
       display = (
-        <span role="img" aria-label="Wastebasket">
-          🗑
+        <span role="img" aria-label="Candy">
+          🍬
         </span>
       );
     } else if (Number(this.props.value) === 2) {
       display = (
-        <span role="img" aria-label="Money bag">
-          💰
+        <span role="img" aria-label="Light bulb">
+          💡
         </span>
       );
     } else if (Number(this.props.value) === 3) {
+      display = (
+        <span role="img" aria-label="Four leaf clover">
+          🍀
+        </span>
+      );
+    } else if (Number(this.props.value) === 4) {
       display = (
         <span role="img" aria-label="Money with wings">
           💸

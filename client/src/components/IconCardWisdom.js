@@ -10,29 +10,36 @@ class IconCard extends React.Component {
     );
     if ( this.props.value && Number(this.props.value) === 0) {
       display = (
-        <span role="img" aria-label="Loudly crying face">
-          😭
+        <span role="img" aria-label="Scales">
+          ⚖️
         </span>
       );
     } else if (Number(this.props.value) === 1) {
       display = (
-        <span role="img" aria-label="Sad face">
-          😔
+        <span role="img" aria-label="Fire">
+          🔥
         </span>
       );
     } else if (Number(this.props.value) === 2) {
       display = (
-        <span role="img" aria-label="Smiling face">
-          😊
+        <span role="img" aria-label="First quarter moon with face">
+          🌛
         </span>
       );
     } else if (Number(this.props.value) === 3) {
       display = (
-        <span role="img" aria-label="Face with starry eyes">
-          🤩
+        <span role="img" aria-label="First quarter moon">
+          🌓
+        </span>
+      );
+    } else if (Number(this.props.value) === 4) {
+      display = (
+        <span role="img" aria-label="Ligthning bolt">
+          ⚡️
         </span>
       );
     }
+
 
     return (
       <Card bg={"#f7f1e3"} width={"120px"} mx={"auto"} my={"auto"} p={0}>
