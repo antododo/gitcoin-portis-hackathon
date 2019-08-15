@@ -16,7 +16,7 @@ class Result extends React.Component {
               </span>
             </Text>
             <Text>
-              I'm currently reading on the palm of your blockchain address. It can take some time...
+              I'm currently reading on the palm of your Ethereum address. It can take some time...
               You can check my progress <Link href={this.props.hashLink} target="_blank" title="Check transaction"> here.
               </Link>
             </Text>

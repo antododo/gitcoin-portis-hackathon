@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import FortuneTellerContract from "./contracts/FortuneTeller.json";
-// import getWeb3 from "./utils/getWeb3";
-import { ThemeProvider, Box, Flex, Card, Text, Button, Input, Flash} from "rimble-ui";
+import { ThemeProvider, Box, Flex, Card, Text, Button, Input, Flash, Link} from "rimble-ui";
 import Header from "./components/Header.js";
 import Result from "./components/Result.js";
 import Introduction from "./components/Introduction.js";
+import Credit from "./components/Credit.js";
 
-// TODO - Uncomment to use Portis
 import Portis from "@portis/web3";
 import Web3 from "web3";
 const portis = new Portis("dae9a9af-6535-4523-9a54-ac231a2deb6e", "ropsten", {gasRelay: true });
@@ -30,25 +29,20 @@ class App extends Component {
 
   componentDidMount = async () => {
     try {
-      // Get network provider and web3 instance.
-      // const web3 = await getWeb3(); // TODO - Comment to use Portis
-
-      // Use web3 to get the user's accounts.
-      // const accounts = await web3.eth.getAccounts(); // TODO - Comment to use Portis
-      const accounts = await portis.provider.enable(); // TODO - Uncomment to use Portis
+      // Use Portis web3 to get the user's accounts.
+      const accounts = await portis.provider.enable();
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
       const deployedNetwork = FortuneTellerContract.networks[networkId];
       console.log(deployedNetwork);
-      console.log(deployedNetwork.address);
       const FortuneTellerInstance = new web3.eth.Contract(
         FortuneTellerContract.abi,
         deployedNetwork && deployedNetwork.address
       );
 
-      // Set web3, accounts, and contract to the state, and then proceed with an
-      // example of interacting with the contract's methods.
+      // Set web3, accounts, and contract to the state, and then proceed to
+      // check if a prediction was already made for this account
       this.setState(
         {
           web3,
@@ -91,23 +85,6 @@ class App extends Component {
     }
   };
 
-  runTest = async () => {
-    const { accounts, FortuneTellerContract } = this.state;
-    console.log("accounts: ", accounts);
-
-    // Stores a given value, 5 by default.
-    console.log("contract address: ", FortuneTellerContract.address);
-    await FortuneTellerContract.methods
-      .setValue(Number(this.state.storageValue) + 1)
-      .send({ from: accounts[0] });
-
-    // Get the value from the contract to prove it worked.
-    const response = await FortuneTellerContract.methods.getValue().call();
-
-    // Update state with the result.
-    this.setState({ storageValue: response });
-  };
-
   callPrediction = async () => {
     const { accounts, FortuneTellerContract } = this.state;
     // Get the value from the contract
@@ -117,10 +94,6 @@ class App extends Component {
       .on('transactionHash', (hash) => {
         this.setState({ waitingTransaction: true, hashLink: `https://ropsten.etherscan.io/tx/${hash}`});
       })
-      .on("receipt", receipt => {
-        console.log("receipt");
-        // console.log(receipt);
-      });
     // Update state with the result.
     this.getPrediction()
   };
@@ -138,10 +111,6 @@ class App extends Component {
       .on('transactionHash', (hash) => {
         this.setState({ waitingTransaction: true, hashLink: `https://ropsten.etherscan.io/tx/${hash}`});
       })
-      .on("receipt", receipt => {
-        console.log("receipt");
-        // console.log(receipt);
-      });
     // Update state with the result.
     this.getPrediction()
   };
@@ -156,18 +125,19 @@ class App extends Component {
             <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
               <Flash my={3}>
                 <Text fontSize={"5em"} textAlign={"center"}>
-                  <span role="img" aria-label="Crystall ball">
+                  <span role="img" aria-label="Eyes">
                     👀
                   </span>
                 </Text>
                 <Text>
-                  Before everything, I need to know your blockchain address.
+                  Before everything, I need to know your Ethereum address.
                   Let me see if I can find it...
-                  If I don't find it, could you log into Portis so I can read your blockchain address?
+                  If I don't, could you log in to Portis so I can read your Ethereum address?
                 </Text>
-                <Button width={1} onClick={() => { portis.showPortis() }}> Log into Portis</Button>
+                <Button width={1} onClick={() => { portis.showPortis() }}> Log in to Portis</Button>
               </Flash>
             </Card>
+            <Credit/>
           </Box>
         </ThemeProvider>
       )
@@ -183,10 +153,9 @@ class App extends Component {
           {this.state.accounts &&
             <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
               <Flash my={3}>
-                Good! Your blockchain address is: {this.state.accounts[0]}
+                I can see your Ethereum address! it's: {this.state.accounts[0]}
               </Flash>
             </Card>
-
           }
 
           {/* Prediction */}
@@ -216,7 +185,7 @@ class App extends Component {
             <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
             <Flex maxWidth={"640px"} mx={"auto"} p={3}>
               <Text>
-                <Text fontWeight={'bold'}>Not happy with your future?</Text> My great power depends on my gaiety, so if you send me enought ETH to make me happy, I migth be able to change your future for the best!
+                <Text fontWeight={'bold'}>Not happy with your future?</Text> I can change it, but my power depends on my gaiety, so if you send me enought ETH to make me happy, I migth be able to change your future for the best!
               </Text>
             </Flex>
             <Flex width={1}>
@@ -238,24 +207,13 @@ class App extends Component {
                 <p>Send me {this.state.inputValue} ETH</p>
               </Button>
             </Flex>
-
+            <Flash my={3} variant="info">
+              Be sure to have some Ropsten ETH on your account to be able to pay.<br></br>
+              You can have free Ropsten ETH <Link href="https://faucet.ropsten.be/" target="_blank" title="Ropsten faucet"> here</Link>.
+            </Flash>
             </Card>
           }
-
-          {/* //TODO! - ONLY FOR TEST - REMOVE FOR PROD */}
-          <Card maxWidth={"640px"} mx={"auto"} p={3} px={4}>
-            <p>THIS BOX IS ONLY FOR TESTING A SIMPLE CONTRACT CALL</p>
-            <div />
-            <Button
-              onClick={() => {
-                this.runTest();
-              }}
-            >
-              TEST - Increase value
-            </Button>
-            <div>The stored value is: {this.state.storageValue}</div>
-          </Card>
-
+          <Credit/>
         </Box>
       </ThemeProvider>
     );
